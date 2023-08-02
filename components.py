@@ -57,10 +57,9 @@ class Browser:
 class SearchCompanyYandex:
     """search company by keywords"""
 
-    def __init__(self, browser: Browser, keyword: str, company: str, filial: str):
+    def __init__(self, browser: Browser, keyword: str, filial: str):
         self.browser = browser
         self.keyword = keyword
-        self.company = company
         self.filial = filial
 
     def input_text(self):
@@ -154,8 +153,7 @@ class SearchCompanyYandex:
                                 "{ return true } else { return false }}"
                                 "for (let i of document.querySelectorAll('.search-snippet-view')) {"
                                 "for (let j of i.querySelectorAll('div')) { "
-                                "if ((j.innerText === '" + self.company + "') "
-                                "&& isFilial(i, '" + str(self.filial) + "')) { "
+                                "if (isFilial(i, '" + str(self.filial) + "') { "
                                 "company = i; condition = true }}}"
                                 "if (condition) { company.scrollIntoView({behavior: 'smooth', block: 'center'});"
                                 "return 'yes' } else { return 'no' } ")
