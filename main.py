@@ -47,34 +47,38 @@ if __name__ == '__main__':
     for_while = True
 
     while for_while:
+        after_error = False
         sql_obj = SqlQuery()
 
         try:
             task = get_data_db(sql_obj)
         except exceptions.TaskNotFound:
+            after_error = True
             time.sleep(60)
         except exceptions.ErrorDataDb:
+            after_error = True
             for_while = False
             print('error in struct in db')
 
-        # basic logic
-        browser_obj = Browser(mode='window')
-        search_obj = SearchCompanyYandex(
-            browser=browser_obj,
-            keyword=task.get('keyword'),
-            filial=task.get('yandex_id')
-        )
+        if after_error is False:
+            # basic logic
+            browser_obj = Browser(mode='window')
+            search_obj = SearchCompanyYandex(
+                browser=browser_obj,
+                keyword=task.get('keyword'),
+                filial=task.get('yandex_id')
+            )
 
-        # get position
-        result1 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=13', browser_obj, search_obj)
-        result2 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=14', browser_obj, search_obj)
-        result3 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=15', browser_obj, search_obj)
+            # get position
+            result1 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=13', browser_obj, search_obj)
+            result2 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=14', browser_obj, search_obj)
+            result3 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=15', browser_obj, search_obj)
 
-        # update data in db
-        sql_obj.update_status_task(task.get('id'), 3)
-        sql_obj.update_status_task_other(task.get('id'), 2)
-        sql_obj.set_position(result1, result2, result3, task.get('id'))
+            # update data in db
+            sql_obj.update_status_task(task.get('id'), 3)
+            sql_obj.update_status_task_other(task.get('id'), 2)
+            sql_obj.set_position(result1, result2, result3, task.get('id'))
 
-        browser_obj.driver.quit()
+            browser_obj.driver.quit()
 
-        time.sleep(60)
+            time.sleep(60)
