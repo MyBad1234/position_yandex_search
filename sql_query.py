@@ -192,3 +192,42 @@ class SqlQuery(SqlOrm):
         data.update({'yandex_id': data_with_id.get('yandex_id')})
 
         return data
+
+    def update_status_task(self, task_id, status_id):
+        """update status_id for queue"""
+
+        query = "UPDATE queue SET status_id = %s WHERE id = %s"
+        super()._update_query(query, (str(status_id), str(task_id)))
+
+    def update_status_task_other(self, queue_id, status_id):
+        """update status_id for queue_position_yandex_map"""
+
+        query = "UPDATE queue_position_yandex_map SET status_id = %s WHERE queue_id = %s"
+        super()._update_query(query, (str(status_id), str(queue_id)))
+
+    def set_position(self, rad2, rad5, rad10, queue_id):
+        """set position on yandex maps"""
+
+        # control types of rad
+        if rad2 is None:
+            r_2 = 'NULL'
+        else:
+            r_2 = rad2
+
+        if rad5 is None:
+            r_5 = 'NULL'
+        else:
+            r_5 = rad5
+
+        if rad10 is None:
+            r_10 = 'NULL'
+        else:
+            r_10 = rad10
+
+        # make query
+        query = ("UPDATE queue_position_yandex_map "
+                 "SET rad_2 = " + str(r_2) + ", rad_5 = " + str(r_5) + ", "
+                 "rad_10 = " + str(r_10) + " "
+                 "WHERE queue_id = " + str(queue_id))
+
+        super()._update_query(query)

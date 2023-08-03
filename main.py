@@ -16,15 +16,14 @@ def zoom_search(url, browser, search):
     search.input_text()
 
     # get position
+    result_scroll = None
     try:
         result_scroll = search.scroll_results()
         print('position: ' + str(result_scroll))
     except ListOverflowException:
         print('position: not found')
 
-    return browser.driver.execute_script(
-        "return document.location.href"
-    )
+    return result_scroll
 
 
 def get_data_db(sql_work_obj: SqlQuery):
@@ -48,8 +47,9 @@ if __name__ == '__main__':
     for_while = True
 
     while for_while:
+        sql_obj = SqlQuery()
+
         try:
-            sql_obj = SqlQuery()
             task = get_data_db(sql_obj)
         except exceptions.TaskNotFound:
             time.sleep(60)
@@ -66,8 +66,15 @@ if __name__ == '__main__':
         )
 
         # get position
-        url1 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=13', browser_obj, search_obj)
-        zoom_search(make_url(url1, '13'), browser_obj, search_obj)
-        zoom_search(make_url(url1, '14'), browser_obj, search_obj)
+        result1 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=13', browser_obj, search_obj)
+        result2 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=14', browser_obj, search_obj)
+        result3 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=15', browser_obj, search_obj)
+
+        # update data in db
+        sql_obj.update_status_task(task.get('id'), 3)
+        sql_obj.update_status_task_other(task.get('id'), 2)
+        sql_obj.set_position(result1, result2, result3, task.get('id'))
 
         browser_obj.driver.quit()
+
+        time.sleep(60)

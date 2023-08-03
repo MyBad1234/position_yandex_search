@@ -36,7 +36,7 @@ class Browser:
             options.add_argument('--no-sandbox')
             options.add_argument("--disable-gpu")
 
-            self.driver = webdriver.Firefox()
+            self.driver = webdriver.Chrome()
             self.in_windows = True
         elif mode == 'docker':
             # set options for browser in background
@@ -102,15 +102,15 @@ class SearchCompanyYandex:
     def get_position(self):
         """get position of card of company"""
 
+
         position_script = ("let condition = true; let result = 0;"
                            "for (let i of document.querySelectorAll"
                            "('.search-snippet-view')) { if (condition) "
                            "{ result += 1; }"
                            "for (let j of document.querySelectorAll('div')) {"
-                           "if ((j.innerText == '" + self.company + "')"
-                           "&& (i.querySelector"
+                           "if (i.querySelector"
                            "('.search-snippet-view__body').getAttribute('data-id')"
-                           "== '" + self.filial + "'))"
+                           "== '" + self.filial + "')"
                            "{ condition = false; }}} return result")
 
         result = self.browser.driver.execute_script(position_script)
@@ -153,7 +153,7 @@ class SearchCompanyYandex:
                                 "{ return true } else { return false }}"
                                 "for (let i of document.querySelectorAll('.search-snippet-view')) {"
                                 "for (let j of i.querySelectorAll('div')) { "
-                                "if (isFilial(i, '" + str(self.filial) + "') { "
+                                "if (isFilial(i, '" + str(self.filial) + "')) { "
                                 "company = i; condition = true }}}"
                                 "if (condition) { company.scrollIntoView({behavior: 'smooth', block: 'center'});"
                                 "return 'yes' } else { return 'no' } ")
