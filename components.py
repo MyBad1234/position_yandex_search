@@ -166,7 +166,7 @@ class SearchCompanyYandex:
             if condition == 'yes':
                 return position
             else:
-                if int(position) > 50:
+                if int(position) > 100:
                     raise ListOverflowException()
                 if not for_while:
                     raise ListOverflowException()
