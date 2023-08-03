@@ -69,10 +69,17 @@ if __name__ == '__main__':
                 filial=task.get('yandex_id')
             )
 
+            # make url
+            url = 'https://yandex.ru/maps/?ll='
+            url += str(task.get('longitude'))
+            url += '%2C'
+            url += str(task.get('latitude'))
+            url += '&z='
+
             # get position
-            result1 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=13', browser_obj, search_obj)
-            result2 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=14', browser_obj, search_obj)
-            result3 = zoom_search('https://yandex.ru/maps/?ll=37.436598%2C55.679159&z=15', browser_obj, search_obj)
+            result1 = zoom_search(url + '13', browser_obj, search_obj)
+            result2 = zoom_search(url + '14', browser_obj, search_obj)
+            result3 = zoom_search(url + '15', browser_obj, search_obj)
 
             # update data in db
             sql_obj.update_status_task(task.get('id'), 3)
